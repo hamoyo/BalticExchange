@@ -68,5 +68,27 @@ describe('Sauce Demo - Cart and Checkout', () => {
     cy.get('[data-test="continue"]').click();
     cy.get('[data-test="error"]').should('contain', 'First Name is required');
   });
+  
+// Checkout with Missing Items
+
+  it('should show error when trying to checkout with missing items', () => {
+    cy.get('.shopping_cart_link').click();
+    cy.get('[data-test="checkout"]').click();
+
+    // Step 1: Customer Info
+    cy.get('[data-test="firstName"]').type('John');
+    cy.get('[data-test="lastName"]').type('Doe');
+    cy.get('[data-test="postalCode"]').type('12345');
+    cy.get('[data-test="continue"]').click();
+
+    // Step 2: Ensure Total = 0 and click Finish
+    cy.get('.summary_total_label').should('contain', 'Total: $0.00');
+    cy.get('[data-test="finish"]').click();
+
+    // Confirmation
+    cy.get('.complete-header').should('contain', 'No items found in cart to checkout!');
+
+  });
+
 });
 
