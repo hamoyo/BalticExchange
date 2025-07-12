@@ -60,7 +60,6 @@ describe('Restful Booker API', function () {
     expect(response.data.firstname).to.equal('John');
   });
   
-  
   it('should update the booking with token', async function () {
     const response = await axios.put(`${BASE_URL}/booking/${bookingId}`, {
       firstname: "Jane",
@@ -84,4 +83,15 @@ describe('Restful Booker API', function () {
     expect(response.status).to.equal(200);
     expect(response.data.firstname).to.equal('Jane');
   });
+
+  it('should delete the booking', async function () {
+    const response = await axios.delete(`${BASE_URL}/booking/${bookingId}`, {
+      headers: {
+        Cookie: `token=${token}`
+      }
+    });
+
+    expect(response.status).to.be.oneOf([200, 201]);
+  });
+
 });
