@@ -32,6 +32,19 @@ describe('Restful Booker API', function () {
   });
   
   
+  it('missing required fields shouldnot create a new booking', async function () {
+    const response = await axios.post(`${BASE_URL}/booking`, {
+      firstname: "John",
+      additionalneeds: "Breakfast"
+    }, {
+      headers: headers
+    });
+
+    expect(response.status).to.equal(501);
+    expect(response.data).to.have.property('bookingid');
+    bookingId = response.data.bookingid;
+  });
+  
   it('should create a new booking', async function () {
     const response = await axios.post(`${BASE_URL}/booking`, {
       firstname: "John",
@@ -60,6 +73,23 @@ describe('Restful Booker API', function () {
     expect(response.data.firstname).to.equal('John');
   });
   
+  it('without token shouldnot update the booking ', async function () {
+    const response = await axios.put(`${BASE_URL}/booking/${bookingId}`, {
+      firstname: "Jane",
+      lastname: "Doe",
+      totalprice: 200,
+      depositpaid: false,
+      bookingdates: {
+        checkin: "2025-08-01",
+        checkout: "2025-08-05"
+      },
+      additionalneeds: "None"
+    });
+
+    expect(response.status).to.equal(405);
+    expect(response.data.firstname).to.equal('Jane');
+  });
+
   it('should update the booking with token', async function () {
     const response = await axios.put(`${BASE_URL}/booking/${bookingId}`, {
       firstname: "Jane",
